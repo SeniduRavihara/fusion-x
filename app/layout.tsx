@@ -1,6 +1,6 @@
-import HeaderSection from "@/components/sections/HeaderSection";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -11,6 +11,32 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Local FusionX font (TTF) — place your TTF files in `assets/fonts`
+// Expected filenames: assets/fonts/FusionX-Regular.ttf and FusionX-Bold.ttf
+const fusionx = localFont({
+  src: [
+    {
+      path: "../assets/fonts/mokoto-mokoto-regular-400.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  display: "swap",
+  variable: "--font-fusionx",
+});
+
+const pattanakarn = localFont({
+  src: [
+    {
+      path: "../assets/fonts/fonnts.com-Pattanakarn_Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  display: "swap",
+  variable: "--font-pattanakarn",
 });
 
 export const metadata: Metadata = {
@@ -26,9 +52,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${fusionx.variable} ${pattanakarn.className} antialiased`}
       >
-        <HeaderSection />
         {children}
       </body>
     </html>

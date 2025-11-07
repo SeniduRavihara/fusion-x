@@ -1,5 +1,6 @@
 import FinalProjectSection from "@/components/sections/FinalProjectSection";
 import FooterSection from "@/components/sections/FooterSection";
+import HeaderSection from "@/components/sections/HeaderSection";
 import HeroSection from "@/components/sections/HeroSection";
 import OurTeamSection from "@/components/sections/OurTeamSection";
 import OutVisionSection from "@/components/sections/OutVisionSection";
@@ -9,6 +10,7 @@ import TimelineSection from "@/components/sections/TimelineSection";
 export default function Home() {
   return (
     <div className="bg-[#0A0F1A] text-white">
+      <HeaderSection />
       <HeroSection />
       <OutVisionSection />
       <TimelineSection />
