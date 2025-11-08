@@ -9,7 +9,7 @@ import TimelineSection from "@/components/sections/TimelineSection";
 
 export default function Home() {
   return (
-    <div className="bg-[#0A0F1A] text-white">
+    <div className="bg-[#0A0F1A] text-white pt-20">
       <HeaderSection />
       <HeroSection />
       <OutVisionSection />

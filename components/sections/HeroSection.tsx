@@ -24,11 +24,14 @@ const HeroSection = () => {
         {/* Left column - text */}
 
         <div className="flex flex-col justify-center h-full px-8 py-20 lg:px-24 lg:py-0">
-          <h1 style={{ fontFamily: 'var(--font-fusionx)' }} className="font-fusionx text-[#40A9FF] leading-tight text-5xl sm:text-6xl md:text-[5rem]">
+          <h1
+            style={{ fontFamily: "var(--font-fusionx)" }}
+            className="font-fusionx text-[#40A9FF] leading-tight text-5xl sm:text-6xl md:text-[5rem]"
+          >
             FusionX 1.0
           </h1>
           <p className="mt-6 max-w-xl text-[#F0F4F8] text-base sm:text-lg">
-            Intelligent Protection for Tomorrow&apos;s Threats
+            Empowering the Next Generation with Artificial Intelligence
           </p>
 
           <div className="mt-8">

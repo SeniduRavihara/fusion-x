@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 type QA = {
   id: number;
@@ -11,83 +11,63 @@ type QA = {
 const qaList: QA[] = [
   {
     id: 1,
-    question: "What is FusionX 1.0 and who should join?",
+    question: "What is Fusion X 1.0?",
     answer:
-      "FusionX 1.0 is an intensive hands-on program for builders and makers who want to accelerate product prototyping and team collaboration. It's ideal for students, early-stage founders, and developers interested in applied AI and robotics.",
+      "Fusion X 1.0 is a comprehensive 3-day AI learning program followed by a one-month final project phase. Participants learn Python basics, neural networks, and build AI projects with expert guidance.",
   },
   {
     id: 2,
-    question: "Do I need prior experience in robotics or AI?",
+    question: "Do I need prior programming or AI experience?",
     answer:
-      "No. The program welcomes beginners and experienced participants. We provide mentorship and workshops that cover fundamentals and advanced topics so teams can progress together.",
+      "No prior experience is required. The program starts with Python basics and builds up to advanced AI concepts. We welcome beginners and provide all the support needed to succeed.",
   },
   {
     id: 3,
-    question: "How long is the program and what is the time commitment?",
+    question: "What will I learn during the 3-day sessions?",
     answer:
-      "FusionX 1.0 runs for 8 weeks with a mix of weekend workshops and weekday mentor sessions. Typical commitment is 6-10 hours per week depending on your role in the team.",
+      "Day 1: Python fundamentals and programming basics. Day 2: Neural networks and machine learning concepts. Day 3: Hands-on project building with two collaborative AI projects.",
   },
   {
     id: 4,
-    question: "Is there a certificate or demo day at the end?",
+    question: "What happens during the final project phase?",
     answer:
-      "Yes — participants present their final projects during a demo day. Outstanding projects receive recognition and networking opportunities with partners.",
+      "After the 3-day intensive program, you have one month to work on your own AI project. You'll receive ongoing mentorship, regular check-ins, and guidance to develop innovative AI solutions.",
+  },
+  {
+    id: 5,
+    question: "What kind of projects can I work on?",
+    answer:
+      "Any AI-related project that interests you! This could include computer vision applications, natural language processing, predictive analytics, chatbots, recommendation systems, or any innovative AI solution.",
+  },
+  {
+    id: 6,
+    question: "Is there any cost to participate?",
+    answer:
+      "The program details and registration fees will be announced soon. We strive to make AI education accessible to everyone interested in learning.",
   },
 ];
 
 export default function QandASection() {
   const [openId, setOpenId] = useState<number | null>(qaList[0].id);
-  const [query, setQuery] = useState("");
-
-  const filtered = useMemo(() => {
-    if (!query.trim()) return qaList;
-    const q = query.toLowerCase();
-    return qaList.filter(
-      (item) =>
-        item.question.toLowerCase().includes(q) ||
-        item.answer.toLowerCase().includes(q)
-    );
-  }, [query]);
 
   return (
     <section id="qa" className="w-full py-20 bg-black">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
-          <div>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
-              Questions & Answers
-            </h2>
-            <p className="mt-2 text-white/80 max-w-2xl">
-              Answers to common questions about FusionX — if you don&apos;t find
-              what you&apos;re looking for, drop us a message.
-            </p>
-          </div>
-
-          <div className="w-full md:w-1/3">
-            <label htmlFor="qa-search" className="sr-only">
-              Search questions
-            </label>
-            <div className="relative">
-              <input
-                id="qa-search"
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search questions..."
-                className="w-full rounded-full bg-neutral-900/60 border border-purple-700/30 py-3 px-4 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-400">
-                🔍
-              </div>
-            </div>
-          </div>
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
+            Questions & Answers
+          </h2>
+          <p className="text-white/80 max-w-2xl mx-auto">
+            Everything you need to know about Fusion X 1.0 — our AI learning
+            program and final project phase.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filtered.map((item) => (
+        <div className="space-y-4">
+          {qaList.map((item) => (
             <article
               key={item.id}
-              className={`group relative rounded-2xl p-6 bg-gradient-to-br from-neutral-900/60 to-neutral-900/30 border border-purple-800/30 hover:shadow-xl transition-shadow duration-300`}
+              className={`group relative rounded-2xl p-6 bg-linear-to-br from-neutral-900/60 to-neutral-900/30 border border-purple-800/30 hover:shadow-xl transition-shadow duration-300`}
             >
               <button
                 onClick={() =>
@@ -96,8 +76,8 @@ export default function QandASection() {
                 aria-expanded={openId === item.id}
                 className="w-full text-left flex items-start gap-4"
               >
-                <div className="flex-shrink-0 mt-1">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center text-white font-bold">
+                <div className="shrink-0 mt-1">
+                  <div className="w-10 h-10 rounded-lg bg-linear-to-br from-purple-600 to-pink-500 flex items-center justify-center text-white font-bold">
                     Q
                   </div>
                 </div>
@@ -133,12 +113,6 @@ export default function QandASection() {
               </button>
             </article>
           ))}
-
-          {filtered.length === 0 && (
-            <div className="col-span-1 md:col-span-2 rounded-2xl p-8 bg-neutral-900/40 border border-neutral-800 text-center text-white/70">
-              No results. Try another keyword.
-            </div>
-          )}
         </div>
       </div>
     </section>

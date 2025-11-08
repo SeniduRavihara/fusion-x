@@ -4,45 +4,69 @@ import logoImg from "../../assets/Final Logo FusionX.png";
 
 const HeaderSection = () => {
   return (
-    <header className="fixed top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-6">
+    <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-neutral-800">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-4">
           <Link href="/" aria-label="Home" className="inline-block">
-            <Image src={logoImg} alt="FusionX Logo" width={60} height={60} />
+            <Image src={logoImg} alt="FusionX Logo" width={50} height={50} />
           </Link>
         </div>
 
-        <nav aria-label="Primary" className="hidden md:flex items-center gap-6">
+        <nav aria-label="Primary" className="hidden md:flex items-center gap-8">
           <a
             href="/registerpage"
-            className="text-sm text-white hover:underline"
+            className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
           >
             Register
           </a>
-          <a href="#out-vision" className="text-sm text-white hover:underline">
+          <a
+            href="#out-vision"
+            className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
+          >
             Our Vision
           </a>
-          <a href="#timeline" className="text-sm text-white hover:underline">
+          <a
+            href="#timeline"
+            className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
+          >
             Timeline
           </a>
           <a
             href="#final-project"
-            className="text-sm text-white hover:underline"
+            className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
           >
             Final Project
           </a>
-          <a href="#our-team" className="text-sm text-white hover:underline">
+          <a
+            href="#our-team"
+            className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
+          >
             Our Team
           </a>
-          <a href="#qa" className="text-sm text-white hover:underline">
+          <a
+            href="#qa"
+            className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
+          >
             Q&amp;A
           </a>
         </nav>
 
         {/* mobile menu placeholder */}
         <div className="md:hidden">
-          <button aria-label="Open menu" className="text-white">
-            Menu
+          <button aria-label="Open menu" className="text-white p-2">
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
           </button>
         </div>
       </div>
