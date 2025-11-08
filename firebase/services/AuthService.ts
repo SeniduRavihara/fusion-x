@@ -1,10 +1,10 @@
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    signOut,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, db, provider } from "../config";
 
 class AuthService {
@@ -77,21 +77,23 @@ class AuthService {
       // console.log(userCredential);
 
       const user = userCredential.user;
-      const userDocRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
 
-      if (!userDoc.exists()) {
+      // Create or ensure an 'admins' document for this user (default role: 'user').
+      // NOTE: we intentionally do NOT write into a generic 'users' collection here
+      // because admin membership is tracked separately in the 'admins' collection.
+      const adminDocRef = doc(db, "admins", user.uid);
+      const adminDoc = await getDoc(adminDocRef);
+
+      if (!adminDoc.exists()) {
         const payload = {
           uid: user.uid,
           userName: user.displayName || "",
-          regNo: null,
           email: user.email || "",
-          roles: "STUDENT",
-          registered: false,
-          lastResult: null,
+          role: "user",
+          createdAt: serverTimestamp(),
         };
 
-        await setDoc(userDocRef, payload);
+        await setDoc(adminDocRef, payload);
       }
 
       return user;
