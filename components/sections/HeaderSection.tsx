@@ -34,7 +34,7 @@ const HeaderSection = () => {
       }`}
     >
       {/* Animated gradient line at top */}
-      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50 animate-pulse" />
+      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-50 animate-pulse" />
       
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-4 group">
@@ -60,7 +60,7 @@ const HeaderSection = () => {
           >
             <span className="relative z-10">Register</span>
             <span className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/10 to-purple-600/0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-purple-500 to-pink-500 group-hover:w-3/4 transition-all duration-300" />
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-purple-500 to-cyan-400 group-hover:w-3/4 transition-all duration-300" />
           </Link>
           
           {[
@@ -77,7 +77,7 @@ const HeaderSection = () => {
             >
               <span className="relative z-10">{item.label}</span>
               <span className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/10 to-purple-600/0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-purple-500 to-pink-500 group-hover:w-3/4 transition-all duration-300" />
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-purple-500 to-cyan-400 group-hover:w-3/4 transition-all duration-300" />
             </button>
           ))}
         </nav>
@@ -128,7 +128,7 @@ const HeaderSection = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               <span className="relative z-10">Register</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="absolute inset-0 border border-purple-500/0 group-hover:border-purple-500/50 rounded-lg transition-all duration-300" />
             </Link>
             
