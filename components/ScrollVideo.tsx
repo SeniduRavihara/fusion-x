@@ -33,8 +33,8 @@ export default function ScrollVideo({ src, className = "" }: ScrollVideoProps) {
       ScrollTrigger.create({
         trigger: container,
         start: "top top",
-        end: "+=300%",
-        scrub: 0.9,
+        end: "+=1000%",
+        scrub: 3.0,
         pin: true,
         anticipatePin: 1,
         onUpdate: (self) => {
