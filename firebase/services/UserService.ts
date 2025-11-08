@@ -1,4 +1,11 @@
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  query,
+  serverTimestamp,
+  where,
+} from "firebase/firestore";
 import { db } from "../config";
 
 type Registration = {
@@ -10,6 +17,23 @@ type Registration = {
 };
 
 class UserService {
+  /**
+   * Check if an email is already registered.
+   */
+  static async isEmailRegistered(email: string): Promise<boolean> {
+    try {
+      const q = query(
+        collection(db, "registrations"),
+        where("email", "==", email)
+      );
+      const querySnapshot = await getDocs(q);
+      return !querySnapshot.empty;
+    } catch (error) {
+      console.error("UserService.isEmailRegistered error:", error);
+      throw error;
+    }
+  }
+
   /**
    * Store a registration entry in Firestore.
    * Uses a `registrations` collection so we keep signups separated from authenticated users.

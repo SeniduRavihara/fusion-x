@@ -119,7 +119,10 @@ export default function OurTeamSection() {
   };
 
   return (
-    <section className="relative min-h-screen bg-black py-20 px-4 overflow-hidden">
+    <section
+      id="our-team"
+      className="relative min-h-screen bg-black py-20 px-4 overflow-hidden"
+    >
       {/* Background decorative circles */}
       <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-purple-900/20 blur-3xl" />
       <div className="absolute bottom-20 right-20 w-40 h-40 rounded-full bg-purple-900/20 blur-3xl" />

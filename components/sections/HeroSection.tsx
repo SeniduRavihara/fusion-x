@@ -4,7 +4,7 @@ import heroImg from "../../assets/hero-image.png";
 
 const HeroSection = () => {
   return (
-    <section className="relative w-full min-h-screen overflow-hidden bg-[#0A0F1A]">
+    <section className="relative w-full h-[calc(100vh-5rem)] overflow-hidden bg-[#000000]">
       {/* logo moved to site header */}
 
       {/* subtle overlay to act like a texture (hex pattern asset not found) */}
@@ -20,7 +20,7 @@ const HeroSection = () => {
         }}
       />
 
-      <div className="relative z-20 grid grid-cols-1 lg:grid-cols-2 items-center min-h-screen">
+      <div className="relative z-20 grid grid-cols-1 lg:grid-cols-2 items-center h-[calc(100vh-5rem)]">
         {/* Left column - text */}
 
         <div className="flex flex-col justify-center h-full px-8 py-20 lg:px-24 lg:py-0">
@@ -37,31 +37,44 @@ const HeroSection = () => {
           <div className="mt-8">
             <Link
               href="/registerpage"
-              className="inline-flex items-center gap-4 bg-linear-to-r from-purple-700 via-purple-600 to-purple-400 rounded-full px-8 py-3 text-white font-medium shadow-lg hover:brightness-105 transition"
+              className="group relative inline-flex items-center gap-4"
             >
-              <span>Register</span>
-              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-linear-to-br from-purple-900 to-purple-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="w-5 h-5 text-white"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 12h14M12 5l7 7-7 7"
-                  />
-                </svg>
-              </span>
+              {/* Outer purple glow */}
+              <div className="absolute -inset-2 bg-purple-600/40 blur-xl rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+
+              {/* Main button container */}
+              <div className="relative flex items-center w-[300px]">
+                {/* Text container with border */}
+                <div className="relative bg-black border-2 border-purple-600 rounded-full px-10 py-4 pr-20 group-hover:border-purple-500 transition-colors duration-300">
+                  <span className="text-white text-lg md:text-xl font-normal tracking-wide whitespace-nowrap">
+                    Register Now
+                  </span>
+                </div>
+
+                {/* Arrow circle - positioned to overlap */}
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center group-hover:bg-purple-500 transition-all duration-300 group-hover:scale-110">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="w-7 h-7 text-white group-hover:translate-x-1 transition-transform duration-300"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 12h14M12 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+              </div>
             </Link>
           </div>
         </div>
 
         {/* Right column - image */}
-        <div className="flex items-center justify-center px-6 py-12 lg:py-0">
+        <div className="relative top-[50px] justify-center px- py-12 lg:py-0">
           <div className="w-full max-w-3xl">
             <Image
               src={heroImg}
