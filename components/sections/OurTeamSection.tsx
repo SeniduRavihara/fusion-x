@@ -151,9 +151,7 @@ export default function OurTeamSection() {
               FusionX
             </span>
           </h1>
-          <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-            Innovative leaders driving the future of artificial intelligence
-          </p>
+
         </div>
 
         {/* Carousel */}
