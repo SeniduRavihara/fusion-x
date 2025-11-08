@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import QrScanner from "qr-scanner";
+import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { useAuth } from "../../context/AuthContext";
 import AdminService, {
@@ -23,6 +24,10 @@ export default function AdminPage() {
     actions: true,
   });
   const [showColumnMenu, setShowColumnMenu] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scanResult, setScanResult] = useState<string>("");
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const scannerRef = useRef<QrScanner | null>(null);
 
   useEffect(() => {
     const unsub = AdminService.listenRegistrations((list) => {
@@ -42,6 +47,66 @@ export default function AdminPage() {
       alert("Failed to update arrival status. Check console for details.");
     } finally {
       setUpdating(null);
+    }
+  };
+
+  const startScanning = async () => {
+    if (!videoRef.current) return;
+
+    setScanning(true);
+    setScanResult("");
+
+    try {
+      scannerRef.current = new QrScanner(
+        videoRef.current,
+        (result) => {
+          setScanResult(result.data);
+          handleScanResult(result.data);
+        },
+        {
+          highlightScanRegion: true,
+          highlightCodeOutline: true,
+        }
+      );
+
+      await scannerRef.current.start();
+    } catch (err) {
+      console.error("Error starting scanner:", err);
+      setScanning(false);
+    }
+  };
+
+  const stopScanning = () => {
+    if (scannerRef.current) {
+      scannerRef.current.stop();
+      scannerRef.current = null;
+    }
+    setScanning(false);
+  };
+
+  const handleScanResult = async (email: string) => {
+    try {
+      // Find the registration by email
+      const registration = items.find((item) => item.email === email);
+      if (!registration) {
+        alert(`No registration found for email: ${email}`);
+        return;
+      }
+
+      if (registration.is_arrived) {
+        alert(`${registration.name} has already checked in!`);
+        return;
+      }
+
+      // Update arrival status
+      await AdminService.setArrival(registration.id, true);
+      alert(`✅ ${registration.name} checked in successfully!`);
+
+      // Stop scanning after successful check-in
+      stopScanning();
+    } catch (err) {
+      console.error("Error processing scan:", err);
+      alert("Failed to process ticket scan. Check console for details.");
     }
   };
 
@@ -158,6 +223,48 @@ export default function AdminPage() {
           <div>Loading...</div>
         ) : (
           <>
+            {/* QR Scanner Section */}
+            <div className="mb-6 bg-neutral-900/30 rounded-lg border border-neutral-800 p-6">
+              <h2 className="text-xl font-semibold mb-4">Ticket Scanner</h2>
+              <div className="flex flex-col md:flex-row gap-4 items-start">
+                <div className="flex-1">
+                  {!scanning ? (
+                    <button
+                      onClick={startScanning}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium"
+                    >
+                      Start Scanning Tickets
+                    </button>
+                  ) : (
+                    <button
+                      onClick={stopScanning}
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium"
+                    >
+                      Stop Scanning
+                    </button>
+                  )}
+                  {scanResult && (
+                    <div className="mt-2 p-2 bg-neutral-800 rounded text-sm">
+                      Last scanned: {scanResult}
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  {scanning && (
+                    <div className="relative">
+                      <video
+                        ref={videoRef}
+                        className="w-full max-w-md rounded-lg border border-neutral-700"
+                        playsInline
+                        muted
+                      />
+                      <div className="absolute inset-0 border-2 border-green-400 rounded-lg pointer-events-none opacity-50"></div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div className="mb-4">
               <input
                 type="text"

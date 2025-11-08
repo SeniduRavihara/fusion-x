@@ -1,6 +1,8 @@
 "use client";
 
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import UserService from "../../firebase/services/UserService";
 
@@ -13,6 +15,7 @@ type FormState = {
 };
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [form, setForm] = useState<FormState>({
     email: "",
     name: "",
@@ -23,6 +26,9 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<Partial<FormState>>({});
   const [success, setSuccess] = useState("");
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [submited, setSubmited] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const validate = async (): Promise<boolean> => {
     const e: Partial<FormState> = {};
@@ -68,16 +74,32 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!(await validate())) return;
 
+    setIsLoading(true);
+    setOpenDialog(true);
+
     try {
       const res = await UserService.register(form);
       console.log("Registration saved:", res);
-      setSuccess(
-        "Registration submitted successfully! We'll contact you via WhatsApp."
-      );
-      setForm({ email: "", name: "", whatsapp: "", faculty: "", year: "" });
+
+      // Show success animation for 2 seconds
+      setTimeout(() => {
+        setSubmited(true);
+
+        // Redirect to ticket page after another 2 seconds
+        setTimeout(() => {
+          router.push(
+            `/ticket?name=${encodeURIComponent(
+              form.name
+            )}&email=${encodeURIComponent(
+              form.email
+            )}&faculty=${encodeURIComponent(form.faculty)}`
+          );
+        }, 2000);
+      }, 2000);
     } catch (error) {
       console.error(error);
-      setSuccess("");
+      setIsLoading(false);
+      setOpenDialog(false);
       setErrors((prev) => ({
         ...prev,
         email: "Failed to submit. Try again later.",
@@ -222,6 +244,92 @@ export default function RegisterPage() {
 
           {success && <p className="mt-4 text-green-400">{success}</p>}
         </form>
+
+        {/* Success Animation Dialog */}
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+          <DialogContent className="sm:max-w-md bg-[#1f2227] border-[#333842]/20">
+            <DialogTitle className="text-center text-white text-lg font-medium">
+              {submited ? "Registration Complete" : "Please Wait..."}
+            </DialogTitle>
+
+            <div className="py-6 flex justify-center items-center">
+              {isLoading && !submited && (
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full border-4 border-[#262930] border-t-[#4079ff] animate-spin"></div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-12 h-12 rounded-full border-4 border-[#262930] border-b-[#40ffaa] animate-spin animate-delay-150"></div>
+                  </div>
+                </div>
+              )}
+
+              {/* ✅ Success Animation */}
+              {submited && (
+                <div className="relative">
+                  <div className="w-16 h-16 bg-[#262930] rounded-full flex items-center justify-center">
+                    <svg
+                      className="checkmark w-8 h-8 text-[#40ffaa]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 52 52"
+                    >
+                      <circle
+                        className="checkmark__circle"
+                        cx="26"
+                        cy="26"
+                        r="25"
+                        fill="none"
+                        stroke="#262930"
+                        strokeWidth="2"
+                      />
+                      <path
+                        className="checkmark__check"
+                        fill="none"
+                        stroke="#40ffaa"
+                        strokeWidth="4"
+                        d="M14.1 27.2l7.1 7.2 16.7-16.8"
+                        strokeDasharray="48"
+                        strokeDashoffset="48"
+                        style={{
+                          animation: "dash 0.8s ease-in-out forwards",
+                        }}
+                      />
+                    </svg>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <p className="text-center text-gray-400 text-sm px-4">
+              {isLoading && !submited
+                ? "Please wait while we process your registration..."
+                : "Your registration is complete! Redirecting to ticket download..."}
+            </p>
+
+            <style jsx>{`
+              @keyframes dash {
+                from {
+                  stroke-dashoffset: 48;
+                }
+                to {
+                  stroke-dashoffset: 0;
+                }
+              }
+
+              @keyframes delay-spin {
+                0% {
+                  transform: rotate(0deg);
+                }
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+
+              .animate-delay-150 {
+                animation-delay: 150ms;
+                animation-direction: reverse;
+              }
+            `}</style>
+          </DialogContent>
+        </Dialog>
       </div>
     </main>
   );
