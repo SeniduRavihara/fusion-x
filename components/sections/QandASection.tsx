@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type QA = {
   id: number;
@@ -50,29 +54,149 @@ const qaList: QA[] = [
 export default function QandASection() {
   const [openId, setOpenId] = useState<number | null>(qaList[0].id);
 
+  // Refs for animations
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const qaItemsRef = useRef<HTMLDivElement[]>([]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Title animation
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 50, scale: 0.9 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Subtitle animation
+      gsap.fromTo(
+        subtitleRef.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay: 0.2,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: subtitleRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Q&A items staggered animation
+      qaItemsRef.current.forEach((item, index) => {
+        gsap.fromTo(
+          item,
+          { opacity: 0, y: 40, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: index * 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: item,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+
+        // Add hover animations
+        const handleMouseEnter = () => {
+          gsap.to(item, {
+            scale: 1.02,
+            boxShadow: "0 20px 40px rgba(147, 51, 234, 0.15)",
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        };
+
+        const handleMouseLeave = () => {
+          gsap.to(item, {
+            scale: 1,
+            boxShadow: "0 0 0 rgba(147, 51, 234, 0)",
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        };
+
+        item.addEventListener("mouseenter", handleMouseEnter);
+        item.addEventListener("mouseleave", handleMouseLeave);
+
+        // Cleanup
+        return () => {
+          item.removeEventListener("mouseenter", handleMouseEnter);
+          item.removeEventListener("mouseleave", handleMouseLeave);
+        };
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const toggleQA = (id: number) => {
+    const newOpenId = openId === id ? null : id;
+    setOpenId(newOpenId);
+
+    // Animate the toggle icon
+    const itemIndex = qaList.findIndex((item) => item.id === id);
+    const itemElement = qaItemsRef.current[itemIndex];
+    if (itemElement) {
+      const icon = itemElement.querySelector("svg");
+      if (icon) {
+        gsap.to(icon, {
+          rotation: newOpenId === id ? 180 : 0,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      }
+    }
+  };
+
   return (
-    <section id="qa" className="w-full py-20 bg-black">
+    <section ref={sectionRef} id="qa" className="w-full py-20 bg-black">
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
+          <h2
+            ref={titleRef}
+            className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4"
+          >
             Questions & Answers
           </h2>
-          <p className="text-white/80 max-w-2xl mx-auto">
+          <p ref={subtitleRef} className="text-white/80 max-w-2xl mx-auto">
             Everything you need to know about Fusion X 1.0 — our AI learning
             program and final project phase.
           </p>
         </div>
 
         <div className="space-y-4">
-          {qaList.map((item) => (
+          {qaList.map((item, index) => (
             <article
               key={item.id}
-              className={`group relative rounded-2xl p-6 bg-linear-to-br from-neutral-900/60 to-neutral-900/30 border border-purple-800/30 hover:shadow-xl transition-shadow duration-300`}
+              ref={(el: HTMLDivElement | null) => {
+                if (el) qaItemsRef.current[index] = el;
+              }}
+              className={`group relative rounded-2xl p-6 bg-linear-to-br from-neutral-900/60 to-neutral-900/30 border border-purple-800/30 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:border-purple-600/50`}
             >
               <button
-                onClick={() =>
-                  setOpenId((prev) => (prev === item.id ? null : item.id))
-                }
+                onClick={() => toggleQA(item.id)}
                 aria-expanded={openId === item.id}
                 className="w-full text-left flex items-start gap-4"
               >
@@ -95,9 +219,7 @@ export default function QandASection() {
                 </div>
                 <div className="ml-4 flex items-center">
                   <svg
-                    className={`w-5 h-5 text-purple-400 transform transition-transform duration-300 ${
-                      openId === item.id ? "rotate-180" : "rotate-0"
-                    }`}
+                    className="w-5 h-5 text-purple-400 transform transition-transform duration-300"
                     viewBox="0 0 20 20"
                     fill="none"
                   >

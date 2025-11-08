@@ -83,8 +83,10 @@ const teamMembers: TeamMember[] = [
 
 export default function OurTeamSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [itemsPerView, setItemsPerView] = useState(3); // Default for SSR
+  const [dots, setDots] = useState<number[]>([]); // Start empty to avoid hydration mismatch
 
-  // Responsive items per view
+  // Calculate items per view
   const getItemsPerView = () => {
     if (typeof window !== "undefined") {
       if (window.innerWidth >= 1280) return 4; // xl
@@ -95,20 +97,25 @@ export default function OurTeamSection() {
     return 3; // default
   };
 
-  const [itemsPerView, setItemsPerView] = useState(getItemsPerView());
-  const maxIndex = Math.max(0, teamMembers.length - itemsPerView);
-
-  // Update items per view on resize
+  // Update items per view and dots on mount and resize
   useEffect(() => {
-    const handleResize = () => {
-      setItemsPerView(getItemsPerView());
+    const updateItemsPerView = () => {
+      const newItemsPerView = getItemsPerView();
+      setItemsPerView(newItemsPerView);
+      // Calculate number of dots as ceil(total items / items per view)
+      const numDots = Math.ceil(teamMembers.length / newItemsPerView);
+      setDots(Array.from({ length: numDots }, (_, i) => i));
     };
 
+    updateItemsPerView(); // Initial calculation
+
     if (typeof window !== "undefined") {
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
+      window.addEventListener("resize", updateItemsPerView);
+      return () => window.removeEventListener("resize", updateItemsPerView);
     }
   }, []);
+
+  const maxIndex = Math.max(0, teamMembers.length - itemsPerView);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
@@ -207,7 +214,7 @@ export default function OurTeamSection() {
 
           {/* Dots Indicator */}
           <div className="flex justify-center gap-3 mt-12">
-            {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+            {dots.map((index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}

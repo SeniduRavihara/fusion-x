@@ -1,10 +1,113 @@
+"use client";
+
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
+
 import heroImg from "../../assets/hero-image.png";
 
 const HeroSection = () => {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Hero title animation
+      gsap.fromTo(
+        titleRef.current,
+        {
+          opacity: 0,
+          y: 50,
+          scale: 0.8,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.2,
+          ease: "power3.out",
+        }
+      );
+
+      // Subtitle animation with delay
+      gsap.fromTo(
+        subtitleRef.current,
+        {
+          opacity: 0,
+          y: 30,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          delay: 0.3,
+          ease: "power2.out",
+        }
+      );
+
+      // Button animation with delay
+      gsap.fromTo(
+        buttonRef.current,
+        {
+          opacity: 0,
+          y: 20,
+          scale: 0.9,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          delay: 0.6,
+          ease: "back.out(1.7)",
+        }
+      );
+
+      // Image animation from right
+      gsap.fromTo(
+        imageRef.current,
+        {
+          opacity: 0,
+          x: 100,
+          scale: 0.8,
+        },
+        {
+          opacity: 1,
+          x: 0,
+          scale: 1,
+          duration: 1.2,
+          delay: 0.4,
+          ease: "power3.out",
+        }
+      );
+
+      // Parallax effect for background
+      gsap.to(heroRef.current, {
+        backgroundPosition: "50% 100px",
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
   return (
-    <section className="relative w-full h-[calc(100vh-5rem)] overflow-hidden bg-[#000000]">
+    <section
+      ref={heroRef}
+      className="relative w-full h-[calc(100vh-5rem)] overflow-hidden bg-[#000000]"
+    >
       {/* logo moved to site header */}
 
       {/* subtle overlay to act like a texture (hex pattern asset not found) */}
@@ -25,16 +128,20 @@ const HeroSection = () => {
 
         <div className="flex flex-col justify-center h-full px-8 py-20 lg:px-24 lg:py-0">
           <h1
+            ref={titleRef}
             style={{ fontFamily: "var(--font-fusionx)" }}
             className="font-fusionx text-[#40A9FF] leading-tight text-5xl sm:text-6xl md:text-[5rem]"
           >
             FusionX 1.0
           </h1>
-          <p className="mt-6 max-w-xl text-[#F0F4F8] text-base sm:text-lg">
+          <p
+            ref={subtitleRef}
+            className="mt-6 max-w-xl text-[#F0F4F8] text-base sm:text-lg"
+          >
             Empowering the Next Generation with Artificial Intelligence
           </p>
 
-          <div className="mt-8">
+          <div ref={buttonRef} className="mt-8">
             <Link
               href="/registerpage"
               className="group relative inline-flex items-center gap-4"
@@ -74,12 +181,15 @@ const HeroSection = () => {
         </div>
 
         {/* Right column - image */}
-        <div className="relative top-[50px] justify-center px- py-12 lg:py-0">
-          <div className="w-full max-w-3xl">
+        <div
+          ref={imageRef}
+          className="flex relative mt-10 h-full items-end justify-center px- py-12 lg:py-0"
+        >
+          <div className="w-full max-w-3xl h-full flex items-end">
             <Image
               src={heroImg}
               alt="Robot"
-              className="object-contain"
+              className="object-contain w-full h-auto"
               sizes="(min-width: 1024px) 50vw, 100vw"
               priority
             />
