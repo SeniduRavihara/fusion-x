@@ -17,31 +17,16 @@ export default function RobotVideoSection() {
 
         {/* Description */}
         <p className="text-xl text-gray-300 text-center mb-16 max-w-3xl mx-auto">
-          Watch the robot come to life as you scroll. The video playback is perfectly synchronized with your scroll position.
+          Watch the robot come to life as you scroll. The video playback is
+          perfectly synchronized with your scroll position.
         </p>
 
         {/* Scroll Video Container */}
         <div className="relative">
           <ScrollVideo
-            src="/videos/robot-animation.mp4" // Replace with your actual video path
+            src="/videos/robo-video.mp4"
             className="rounded-2xl overflow-hidden shadow-2xl shadow-purple-500/20"
-            start="top center"
-            end="bottom center"
-            scrub={0.5}
-            pin={false}
           />
-
-          {/* Overlay text */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="text-center">
-              <h2 className="text-4xl md:text-6xl font-bold text-white mb-4 opacity-80">
-                Scroll to Control
-              </h2>
-              <p className="text-lg text-gray-300 opacity-60">
-                The robot animation follows your scroll
-              </p>
-            </div>
-          </div>
         </div>
 
         {/* Instructions */}

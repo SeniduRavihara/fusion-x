@@ -5,6 +5,7 @@ import HeroSection from "@/components/sections/HeroSection";
 import OurTeamSection from "@/components/sections/OurTeamSection";
 import OutVisionSection from "@/components/sections/OutVisionSection";
 import QandASection from "@/components/sections/QandASection";
+import RobotVideoSection from "@/components/sections/RobotVideoSection";
 import TimelineSection from "@/components/sections/TimelineSection";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <FinalProjectSection />
       <OurTeamSection />
       <QandASection />
+      <RobotVideoSection />
       <FooterSection />
     </div>
   );
