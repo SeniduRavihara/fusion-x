@@ -46,6 +46,16 @@ interface LeadershipMember {
   linkedin?: string;
 }
 
+// Team member interface
+interface TeamMember {
+  id: number;
+  name: string;
+  role: string;
+  image: string;
+  github?: string;
+  linkedin?: string;
+}
+
 // Leadership team members
 const leadershipMembers: LeadershipMember[] = [
   {

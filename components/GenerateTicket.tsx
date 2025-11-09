@@ -4,6 +4,7 @@ import Image from "next/image";
 import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
+import UserService from "../firebase/services/UserService";
 
 export default function GenerateTicket({
   name = "Participant",
@@ -19,6 +20,7 @@ export default function GenerateTicket({
   const [imageData, setImageData] = useState<string | null>(null);
   const [isEmailSending, setIsEmailSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [isCheckingEmailStatus, setIsCheckingEmailStatus] = useState(true);
 
   const handleDownload = async () => {
     const element = document.getElementById("ticket");
@@ -47,6 +49,15 @@ export default function GenerateTicket({
   const handleEmail = async () => {
     setIsEmailSending(true);
     try {
+      // Check if email was already sent
+      const alreadySent = await UserService.isEmailSent(email);
+      if (alreadySent) {
+        setEmailSent(true);
+        alert("Ticket has already been sent to your email!");
+        setIsEmailSending(false);
+        return;
+      }
+
       const response = await fetch("/api/send-ticket", {
         method: "POST",
         headers: {
@@ -62,6 +73,8 @@ export default function GenerateTicket({
       const data = await response.json();
 
       if (response.ok) {
+        // Mark email as sent in Firestore
+        await UserService.markEmailAsSent(email);
         setEmailSent(true);
         alert("Ticket sent successfully to your email!");
       } else {
@@ -75,10 +88,59 @@ export default function GenerateTicket({
     }
   };
 
+  // Check email status and send automatically on component mount
+  useEffect(() => {
+    const checkAndSendEmail = async () => {
+      try {
+        setIsCheckingEmailStatus(true);
+        
+        // Check if email was already sent
+        const alreadySent = await UserService.isEmailSent(email);
+        
+        if (alreadySent) {
+          setEmailSent(true);
+          setIsCheckingEmailStatus(false);
+          return;
+        }
+
+        // If not sent, send automatically
+        setIsEmailSending(true);
+        const response = await fetch("/api/send-ticket", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            faculty,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Mark email as sent in Firestore
+          await UserService.markEmailAsSent(email);
+          setEmailSent(true);
+        } else {
+          console.error("Failed to send email:", data.error);
+        }
+      } catch (error) {
+        console.error("Error in automatic email sending:", error);
+      } finally {
+        setIsEmailSending(false);
+        setIsCheckingEmailStatus(false);
+      }
+    };
+
+    checkAndSendEmail();
+  }, [email, name, faculty]);
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       handleDownload();
-    }, 1500);
+    }, 2000); // Increased timeout to allow email to send first
 
     return () => clearTimeout(timeout);
   }, []);
@@ -201,30 +263,32 @@ export default function GenerateTicket({
 
         <button
           onClick={handleEmail}
-          disabled={isEmailSending || emailSent}
+          disabled={isEmailSending || emailSent || isCheckingEmailStatus}
           className="flex items-center justify-center px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:opacity-70 text-white font-medium rounded-lg shadow-md transition-all duration-300"
         >
-          {isEmailSending ? (
+          {isEmailSending || isCheckingEmailStatus ? (
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
           ) : emailSent ? (
             <Mail className="mr-2 h-5 w-5" />
           ) : (
             <Mail className="mr-2 h-5 w-5" />
           )}
-          {isEmailSending
+          {isCheckingEmailStatus
+            ? "Checking..."
+            : isEmailSending
             ? "Sending..."
             : emailSent
-            ? "Link Sent!"
-            : "Email Access Link"}
+            ? "Email Already Sent!"
+            : "Resend Email"}
         </button>
       </div>
 
       {/* Instructions */}
       <div className="mt-6 text-center bg-[#262930] p-4 rounded-lg border border-[#333842] w-full max-w-md">
         <p className="text-gray-300 text-sm">
-          Your ticket has been automatically downloaded. You can download it
-          again, email an access link to yourself, or share it via WhatsApp.
-          Bring this ticket to the event entrance.
+          {emailSent 
+            ? "Your ticket has been automatically sent to your email and downloaded. You can download it again if needed. Bring this ticket to the event entrance."
+            : "Your ticket is being processed. It will be automatically sent to your email and downloaded. Bring this ticket to the event entrance."}
         </p>
       </div>
     </div>
