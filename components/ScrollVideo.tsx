@@ -1,90 +1,89 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
 interface ScrollVideoProps {
   src: string;
   className?: string;
-  start?: string;
-  end?: string;
-  scrub?: number | boolean;
-  pin?: boolean;
 }
 
-export default function ScrollVideo({
-  src,
-  className = "",
-  start = "top top",
-  end = "bottom top",
-  scrub = 1,
-  pin = false,
-}: ScrollVideoProps) {
+export default function ScrollVideo({ src, className = "" }: ScrollVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    const container = containerRef.current;
+    if (!video || !container) return;
+
+    // Initialize ScrollSmoother FIRST (only once)
+    let smoother = ScrollSmoother.get();
+    if (!smoother) {
+      smoother = ScrollSmoother.create({
+        wrapper: "#smooth-wrapper",
+        content: "#smooth-content",
+        smooth: 1.5, // Smoothing duration in seconds
+        effects: true,
+        smoothTouch: 0.1, // Smooth scrolling on touch devices too
+      });
+    }
+
+    // Explicitly prevent auto-play
+    video.autoplay = false;
+    video.pause();
 
     // Wait for video metadata to load
     const handleLoadedMetadata = () => {
-      const videoDuration = video.duration;
+      // Ensure video stays paused
+      video.pause();
 
-      // Create ScrollTrigger to control video playback
+      // Create ScrollTrigger to control video with pinning
+      // Using a lower scrub value for smoother integration with ScrollSmoother
       ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: start,
-        end: end,
-        scrub: scrub,
-        pin: pin,
+        trigger: container,
+        start: "top top",
+        end: "+=100%",
+        scrub: 0.2, // Reduced from 3.0 for smoother playback
+        pin: true,
+        anticipatePin: 1,
         onUpdate: (self) => {
-          // Calculate the current time based on scroll progress
-          const currentTime = self.progress * videoDuration;
-
-          // Only update if the difference is significant to avoid jitter
-          if (Math.abs(video.currentTime - currentTime) > 0.1) {
-            video.currentTime = currentTime;
-          }
-        },
-        onEnter: () => {
-          // Ensure video is ready to play
-          if (video.paused) {
-            video.play().catch(console.error);
-          }
-        },
-        onLeave: () => {
-          // Pause video when leaving the trigger area
-          video.pause();
-        },
-        onEnterBack: () => {
-          // Resume playing when scrolling back
-          if (video.paused) {
-            video.play().catch(console.error);
-          }
-        },
-        onLeaveBack: () => {
-          // Pause when scrolling back past the start
-          video.pause();
+          video.currentTime = video.duration * self.progress;
         },
       });
     };
 
+    // Prevent any auto-play attempts
+    const preventAutoPlay = () => {
+      if (!video.paused) {
+        video.pause();
+      }
+    };
+
     // Load video metadata
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    video.addEventListener("canplay", preventAutoPlay);
+    video.addEventListener("play", preventAutoPlay);
 
     // Preload video
     video.load();
 
     return () => {
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      // Kill ScrollTrigger instance
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      video.removeEventListener("canplay", preventAutoPlay);
+      video.removeEventListener("play", preventAutoPlay);
+      // Kill all ScrollTriggers for this component
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (trigger.vars.trigger === container) {
+          trigger.kill();
+        }
+      });
     };
-  }, [start, end, scrub, pin]);
+  }, []);
 
   return (
     <div ref={containerRef} className={`scroll-video-container ${className}`}>
@@ -93,8 +92,9 @@ export default function ScrollVideo({
         src={src}
         muted
         playsInline
+        autoPlay={false}
         preload="metadata"
-        className="w-full h-auto"
+        className="w-[] h-auto"
         style={{ pointerEvents: "none" }}
       />
     </div>

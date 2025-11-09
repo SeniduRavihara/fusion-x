@@ -51,11 +51,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${fusionx.variable}`}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${fusionx.variable} ${pattanakarn.className} antialiased`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <div id="smooth-wrapper">
+          <div id="smooth-content">
+            <AuthProvider>{children}</AuthProvider>
+          </div>
+        </div>
       </body>
     </html>
   );
