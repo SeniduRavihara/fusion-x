@@ -1,10 +1,11 @@
 "use client";
 
 import { gsap } from "gsap";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
 interface ScrollVideoProps {
   src: string;
@@ -20,6 +21,18 @@ export default function ScrollVideo({ src, className = "" }: ScrollVideoProps) {
     const container = containerRef.current;
     if (!video || !container) return;
 
+    // Initialize ScrollSmoother FIRST (only once)
+    let smoother = ScrollSmoother.get();
+    if (!smoother) {
+      smoother = ScrollSmoother.create({
+        wrapper: "#smooth-wrapper",
+        content: "#smooth-content",
+        smooth: 1.5, // Smoothing duration in seconds
+        effects: true,
+        smoothTouch: 0.1, // Smooth scrolling on touch devices too
+      });
+    }
+
     // Explicitly prevent auto-play
     video.autoplay = false;
     video.pause();
@@ -30,11 +43,12 @@ export default function ScrollVideo({ src, className = "" }: ScrollVideoProps) {
       video.pause();
 
       // Create ScrollTrigger to control video with pinning
+      // Using a lower scrub value for smoother integration with ScrollSmoother
       ScrollTrigger.create({
         trigger: container,
         start: "top top",
-        end: "+=1000%",
-        scrub: 3.0,
+        end: "+=200%",
+        scrub: 0.2, // Reduced from 3.0 for smoother playback
         pin: true,
         anticipatePin: 1,
         onUpdate: (self) => {

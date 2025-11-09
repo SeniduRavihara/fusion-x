@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BackgroundBeams } from "../ui/background-beams";
 import "./OutVisionSection.css";
@@ -47,7 +46,7 @@ const OutVisionSection = () => {
       y: 0,
       transition: {
         duration: 0.4,
-        ease: "easeOut",
+        ease: [0.4, 0, 0.2, 1] as any,
       },
     },
   };

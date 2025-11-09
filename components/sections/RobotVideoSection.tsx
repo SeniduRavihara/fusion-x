@@ -24,7 +24,7 @@ export default function RobotVideoSection() {
         {/* Scroll Video Container */}
         <div className="relative">
           <ScrollVideo
-            src="/videos/robo-video.mp4"
+            src="/videos/robo-video-smooth.mp4"
             className="rounded-2xl overflow-hidden shadow-2xl shadow-purple-500/20"
           />
         </div>
