@@ -47,7 +47,7 @@ export default function ScrollVideo({ src, className = "" }: ScrollVideoProps) {
       ScrollTrigger.create({
         trigger: container,
         start: "top top",
-        end: "+=200%",
+        end: "+=100%",
         scrub: 0.2, // Reduced from 3.0 for smoother playback
         pin: true,
         anticipatePin: 1,
