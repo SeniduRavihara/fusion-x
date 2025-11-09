@@ -58,7 +58,7 @@ const SessionsStack = ({ direction = "vertical" }) => {
           end: () => `+=${items.length * 30}%`,
           scrub: 1,
           invalidateOnRefresh: true,
-          markers: true,
+          markers: false,
         },
         defaults: { ease: "none" },
       });
