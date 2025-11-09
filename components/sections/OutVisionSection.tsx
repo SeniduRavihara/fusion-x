@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { BackgroundBeams } from "../ui/background-beams";
-import "./OutVisionSection.css";
 
 const OutVisionSection = () => {
   const sectionRef = useRef(null);
@@ -46,7 +45,7 @@ const OutVisionSection = () => {
       y: 0,
       transition: {
         duration: 0.4,
-        ease: [0.4, 0, 0.2, 1] as any,
+        ease: "easeOut" as const,
       },
     },
   };
@@ -55,142 +54,80 @@ const OutVisionSection = () => {
     "Fusion X 1.0 is dedicated to democratizing artificial intelligence education and empowering the next generation of innovators. Through our intensive 3-day AI learning program, we provide hands-on experience with Python programming, neural networks, and practical project development. Our mission is to bridge the gap between theoretical knowledge and real-world application, fostering a community of AI enthusiasts who can tackle tomorrow's challenges with confidence.";
   const words = visionText.split(" ");
 
-  // Create decorative dots grid
-  const createDots = () => {
-    const dots = [];
-    for (let i = 0; i < 20; i++) {
-      for (let j = 0; j < 3; j++) {
-        dots.push(
-          <div
-            key={`${i}-${j}`}
-            className={`dot absolute w-1 h-1 bg-purple-400/30 rounded-full ${
-              isVisible ? "animate-fadeIn" : "opacity-0"
-            }`}
-            style={{
-              left: `${i * 5}%`,
-              top: `${j * 10 + 5}%`,
-              animationDelay: `${(i + j) * 10}ms`,
-            }}
-          />
-        );
-      }
-    }
-    return dots;
-  };
-
   return (
-    <div ref={sectionRef} className="w-full  mt-20 overflow-hidden">
-      <div className="w-full min-h-[550px] xsm:min-h-[400px] md:min-h-[380px] flex flex-col items-start justify-center relative overflow-hidden">
-        {/* Floating decorative circles */}
-        <div
-          className={`absolute top-10 right-4 w-20 h-20 border border-purple-500/20 rounded-full ${
-            isVisible ? "animate-scaleIn" : "opacity-0 scale-0"
-          }`}
-          style={{ animationDelay: "100ms" }}
-        ></div>
-        <div
-          className={`absolute top-32 right-16 w-12 h-12 border border-purple-500/15 rounded-full ${
-            isVisible ? "animate-scaleIn" : "opacity-0 scale-0"
-          }`}
-          style={{ animationDelay: "200ms" }}
-        ></div>
-        <div
-          className={`absolute bottom-20 left-4 w-16 h-16 border border-purple-500/10 rounded-full ${
-            isVisible ? "animate-scaleIn" : "opacity-0 scale-0"
-          }`}
-          style={{ animationDelay: "300ms" }}
-        ></div>
+    <section id="vision" className="w-full py-28 bg-black min-h-screen">
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Header */}
+        <div className="mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            Our Vision
+          </h2>
+          <p className="text-white/70 text-lg max-w-3xl">
+            Democratizing AI education and empowering the next generation of innovators
+          </p>
+        </div>
 
-        <div
-          id="vision-box"
-          className={`bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-sm border border-purple-500/20 rounded-3xl text-center xsm:text-start w-[95%] xsm:w-[80%] min-h-[80%] xsm:min-h-full flex items-center justify-center relative flex-col ${
-            isVisible ? "animate-slideUp" : "opacity-0 translate-y-16"
-          }`}
-        >
-          {/* Background grid */}
-          <div className="absolute inset-0 bg-grid-purple-500/[0.03] bg-size-[20px_20px]" />
+        {/* Vision Content */}
+        <div ref={sectionRef} className="w-full flex flex-col items-center justify-center relative overflow-hidden">
+          <motion.div
+            className="bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-sm border border-purple-500/20 rounded-3xl w-full max-w-6xl p-8 md:p-12 relative"
+            initial={{ opacity: 0, y: 50 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            {/* Background grid */}
+            <div className="absolute inset-0 bg-grid-purple-500/[0.03] bg-size-[20px_20px] rounded-3xl" />
 
-          {/* Decorative dots */}
-          <div className="absolute opacity-10 inset-0 overflow-hidden">
-            {createDots()}
-          </div>
+            {/* Decorative elements */}
+            <div className="absolute top-4 right-4 w-20 h-20 border border-purple-500/20 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-4 left-4 w-16 h-16 border border-purple-500/15 rounded-full animate-pulse" style={{ animationDelay: "1s" }}></div>
 
-          {/* Accent borders */}
-          <div
-            className={`absolute top-10 left-0 h-px bg-linear-to-r from-transparent via-purple-500/30 to-transparent ${
-              isVisible ? "animate-expandWidth" : "w-0"
-            }`}
-            style={{ animationDelay: "600ms" }}
-          ></div>
-          <div
-            className={`absolute bottom-10 left-0 h-px bg-linear-to-r from-transparent via-purple-500/30 to-transparent ${
-              isVisible ? "animate-expandWidth" : "w-0"
-            }`}
-            style={{ animationDelay: "800ms" }}
-          ></div>
+            {/* Accent borders */}
+            <div className="absolute top-8 left-0 h-px bg-linear-to-r from-transparent via-purple-500/30 to-transparent w-full"></div>
+            <div className="absolute bottom-8 left-0 h-px bg-linear-to-r from-transparent via-purple-500/30 to-transparent w-full"></div>
 
-          {/* Content container */}
-          <div className="relative z-10 w-full h-full flex flex-col xsm:flex-row items-center justify-between p-6">
-            <motion.div
-              className="w-full xsm:w-2/3 text-left mb-6 xsm:mb-0 xsm:mr-6"
-              initial="hidden"
-              animate={isVisible ? "visible" : "hidden"}
-              variants={textVariants}
-            >
-              {/* Accent slash before heading */}
-              <div className="flex items-center mb-4">
-                <div className="w-6 h-[2px] bg-gradient-to-r from-purple-500 to-pink-500 mr-3"></div>
-                <h3 className="text-white text-lg font-medium tracking-wide">
-                  OUR VISION
-                </h3>
-              </div>
-
-              <p className="text-white leading-relaxed">
-                {words.map((word, i) => (
-                  <motion.span
-                    key={i}
-                    className="inline-block mr-1"
-                    variants={wordVariants}
-                  >
-                    {word}
-                  </motion.span>
-                ))}
-              </p>
-            </motion.div>
-
-            <div className="relative w-full xsm:w-1/3 flex justify-center">
-              {/* Animated rings around image */}
-              <div className="absolute inset-0 border border-purple-500/20 rounded-full animate-ping opacity-30"></div>
-              <div
-                className="absolute inset-4 border border-purple-500/10 rounded-full animate-ping opacity-20"
-                style={{ animationDelay: "700ms" }}
-              ></div>
-
-              {/* <div
-                className={`relative ${isVisible ? "animate-float" : ""}`}
-                id="vision-image"
+            {/* Content */}
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+              <motion.div
+                className="flex-1 text-center md:text-left"
+                initial="hidden"
+                animate={isVisible ? "visible" : "hidden"}
+                variants={textVariants}
               >
-                <Image
-                  src="/images/vision.png"
-                  alt="Vision Illustration"
-                  className="w-[250px] xsm:w-[350px] z-[100] object-cover"
-                  width={500}
-                  height={375}
-                />
-              </div> */}
+                <div className="flex items-center justify-center md:justify-start mb-6">
+                  <div className="w-8 h-[2px] bg-gradient-to-r from-purple-500 to-pink-500 mr-4"></div>
+                  <h3 className="text-purple-400 text-xl font-semibold tracking-wide">
+                    OUR MISSION
+                  </h3>
+                </div>
+
+                <p className="text-white/90 text-lg leading-relaxed">
+                  {words.map((word, i) => (
+                    <motion.span
+                      key={i}
+                      className="inline-block mr-1"
+                      variants={wordVariants}
+                    >
+                      {word}
+                    </motion.span>
+                  ))}
+                </p>
+              </motion.div>
+
+              {/* Visual element placeholder */}
+              <div className="flex-1 flex justify-center">
+                <div className="relative w-80 h-80 border border-purple-500/20 rounded-full flex items-center justify-center">
+                  <div className="absolute inset-4 border border-purple-500/10 rounded-full animate-ping opacity-30"></div>
+                  <div className="text-purple-400 text-6xl font-bold opacity-20">AI</div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Corner accent */}
-          <div className="absolute top-0 right-0 w-20 h-20">
-            <div className="absolute top-0 right-0 w-20 h-px bg-linear-to-l from-purple-500/30 to-transparent"></div>
-            <div className="absolute top-0 right-0 w-px h-20 bg-linear-to-b from-purple-500/30 to-transparent"></div>
-          </div>
-
-          <BackgroundBeams className="opacity-30" />
+            <BackgroundBeams className="opacity-20" />
+          </motion.div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
