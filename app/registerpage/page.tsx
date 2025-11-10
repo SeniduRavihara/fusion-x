@@ -173,7 +173,7 @@ export default function RegisterPage() {
                   ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                   : "border-purple-600/50 hover:border-purple-500/70"
               }`}
-              placeholder="e.g. +94771234567"
+              placeholder="e.g. 0771234567"
             />
             {errors.whatsapp && (
               <p className="mt-1 text-red-400 text-sm">{errors.whatsapp}</p>
