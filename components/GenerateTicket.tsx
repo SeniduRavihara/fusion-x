@@ -176,20 +176,28 @@ export default function GenerateTicket({
             />
 
             {/* Content */}
-            <div className="relative z-10">
-              <div style={{ textAlign: "center", marginBottom: "32px" }}>
+            <div
+              className="relative z-10"
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ textAlign: "center", marginBottom: "20px" }}>
                 {/* Logo - using regular img tag for html2canvas compatibility */}
-                <div className="flex relative -top-5 items-center justify-center">
+                <div className="flex items-center justify-center">
                   <img
                     src="/logo.png"
                     alt="Fusion X Logo"
-                    width={180}
-                    height={180}
+                    width={150}
+                    height={150}
                     crossOrigin="anonymous"
                     style={{
                       objectFit: "contain",
-                      width: "180px",
-                      height: "180px",
+                      width: "150px",
+                      height: "150px",
                     }}
                   />
                 </div>
@@ -198,7 +206,7 @@ export default function GenerateTicket({
               </div>
 
               {/* QR Code */}
-              <div style={{ marginBottom: "10px" }} className="relative -top-5">
+              <div style={{ marginBottom: "16px" }}>
                 <QRCodeCanvas
                   id="myqr"
                   value={email}
@@ -214,26 +222,58 @@ export default function GenerateTicket({
               <div
                 style={{
                   textAlign: "center",
-                  gap: "8px",
+                  gap: "6px",
                   display: "flex",
                   flexDirection: "column",
+                  width: "100%",
+                  maxWidth: "340px",
+                  margin: "0 auto",
+                  minHeight: "90px",
                 }}
-                className="relative -top-5"
               >
-                <p style={{ fontSize: "24px", fontWeight: "semibold" }}>
+                <p
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "600",
+                    wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    width: "100%",
+                    lineHeight: "1.3",
+                  }}
+                >
                   {name}
                 </p>
-                <p style={{ color: "#d1d5db" }}>{email}</p>
-                <p style={{ color: "#d1d5db" }}>{faculty}</p>
+                <p
+                  style={{
+                    color: "#d1d5db",
+                    wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    width: "100%",
+                    fontSize: "13px",
+                    lineHeight: "1.4",
+                  }}
+                >
+                  {email}
+                </p>
+                <p
+                  style={{
+                    color: "#d1d5db",
+                    wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    width: "100%",
+                    fontSize: "14px",
+                  }}
+                >
+                  {faculty}
+                </p>
               </div>
 
               {/* Footer */}
               <div
-                className="relative -top-5"
                 style={{
-                  marginTop: "32px",
+                  marginTop: "20px",
                   textAlign: "center",
-                  fontSize: "14px",
+                  fontSize: "13px",
                   color: "#9ca3af",
                 }}
               >
