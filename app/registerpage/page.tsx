@@ -194,7 +194,7 @@ export default function RegisterPage() {
                     ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                     : "border-purple-600/50 hover:border-purple-500/70"
                 }`}
-                placeholder="Faculty or Department"
+                placeholder="Faculty"
               />
               {errors.faculty && (
                 <p className="mt-1 text-red-400 text-sm">{errors.faculty}</p>
