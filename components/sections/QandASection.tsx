@@ -46,12 +46,7 @@ const qaList: QA[] = [
     answer:
       "Any AI-related project that interests you! This could include computer vision applications, natural language processing, predictive analytics, chatbots, recommendation systems, or any innovative AI solution.",
   },
-  {
-    id: 6,
-    question: "Is there any cost to participate?",
-    answer:
-      "The program details and registration fees will be announced soon. We strive to make AI education accessible to everyone interested in learning.",
-  },
+
 ];
 
 export default function QandASection() {
