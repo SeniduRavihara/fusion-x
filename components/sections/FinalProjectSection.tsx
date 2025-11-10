@@ -89,20 +89,20 @@ const FinalProjectSection = () => {
         <Image
           src={backgroundImg}
           alt=""
-          width={180}
-          height={180}
-          className="w-28 h-28 md:w-40 md:h-40 object-contain"
+          width={400}
+          height={400}
+          className="w-64 h-64 md:w-96 md:h-96 object-contain"
         />
       </div>
 
       {/* Background pattern - bottom right corner */}
-      <div className="absolute bottom-8 right-8 z-0 opacity-8">
+      <div className="absolute bottom-8 right-8 z-0 opacity-10">
         <Image
           src={backgroundImg}
           alt=""
-          width={180}
-          height={180}
-          className="w-28 h-28 md:w-40 md:h-40 object-contain"
+          width={400}
+          height={400}
+          className="w-64 h-64 md:w-96 md:h-96 object-contain"
         />
       </div>
 

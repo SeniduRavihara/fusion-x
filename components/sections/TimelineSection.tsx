@@ -9,16 +9,16 @@ const TimelineSection = () => {
   return (
     <section
       id="timeline"
-      className="w-full -mt-10 bg-black min-h-screen relative"
+      className="w-full -mt-10 bg-black md:min-h-screen relative py-20 md:py-20"
     >
       {/* Background pattern - top left corner */}
       <div className="absolute top-8 left-8 z-0 opacity-10">
         <Image
           src={backgroundImg}
           alt=""
-          width={200}
-          height={200}
-          className="w-32 h-32 md:w-48 md:h-48 object-contain"
+          width={400}
+          height={400}
+          className="w-64 h-64 md:w-96 md:h-96 object-contain"
         />
       </div>
 
@@ -48,7 +48,7 @@ const TimelineSection = () => {
         {/* Two-column layout: Video (sticky) + Timeline Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Left Column: Sticky Robot Video */}
-          <div className="lg:sticky lg:top-8 lg:self-start">
+          <div className="lg:sticky mt-20 lg:top-8 lg:self-start">
             <TimelineVideoSection />
           </div>
 

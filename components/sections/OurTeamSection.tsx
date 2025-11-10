@@ -194,7 +194,7 @@ export default function OurTeamSection() {
   return (
     <section
       id="our-team"
-      className="relative min-h-screen bg-black py-20 px-4 overflow-hidden"
+      className="relative md:min-h-screen bg-black py-12 md:py-20 px-4 overflow-hidden"
     >
       {/* Background pattern - top right corner */}
       <div className="absolute top-8 right-8 z-0 opacity-8">

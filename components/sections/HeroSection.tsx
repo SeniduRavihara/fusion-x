@@ -107,7 +107,7 @@ const HeroSection = () => {
   return (
     <section
       ref={heroRef}
-      className="relative w-full h-[calc(100vh-5rem)] overflow-hidden bg-[#000000]"
+      className="relative w-full md:h-[calc(100vh-5rem)] h-auto overflow-hidden bg-[#000000]"
     >
       {/* logo moved to site header */}
 
@@ -135,10 +135,10 @@ const HeroSection = () => {
         }}
       />
 
-      <div className="relative z-20 grid grid-cols-1 lg:grid-cols-2 items-center h-[calc(100vh-5rem)]">
+      <div className="relative z-20 grid grid-cols-1 lg:grid-cols-2 items-center md:h-[calc(100vh-5rem)] h-auto">
         {/* Left column - text */}
 
-        <div className="flex flex-col justify-center h-full px-8 py-20 lg:px-24 lg:py-0">
+        <div className="flex flex-col justify-center h-full px-8 py-12 lg:px-24 lg:py-0">
           <h1
             ref={titleRef}
             style={{ fontFamily: "var(--font-fusionx)" }}

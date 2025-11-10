@@ -58,7 +58,7 @@ const SessionsStack = ({ direction = "vertical" }) => {
           end: () => `+=${items.length * 30}%`,
           scrub: 1,
           invalidateOnRefresh: true,
-          markers: false,
+          markers: true,
         },
         defaults: { ease: "none" },
       });
@@ -80,7 +80,7 @@ const SessionsStack = ({ direction = "vertical" }) => {
   }, [direction]);
 
   return (
-    <div className="w-full min-h-screen" ref={section}>
+    <div className="w-full min-h-[70vh] md:min-h-screen" ref={section}>
       <div
         role="list"
         className="list relative flex items-center justify-center"
@@ -89,7 +89,7 @@ const SessionsStack = ({ direction = "vertical" }) => {
           <div
             key={index}
             role="listitem"
-            className={`item absolute top-40 w-full max-w-2xl h-80 bg-gradient-to-br ${item.color} rounded-2xl shadow-2xl p-8 border border-white/10`}
+            className={`item absolute top-20 md:top-40 w-full max-w-2xl h-96 md:h-80 bg-linear-to-br ${item.color} rounded-2xl shadow-2xl p-6 md:p-8 border border-white/10`}
           >
             {/* Day Badge */}
             <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-6">

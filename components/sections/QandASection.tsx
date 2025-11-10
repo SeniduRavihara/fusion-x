@@ -177,7 +177,7 @@ export default function QandASection() {
     <section
       ref={sectionRef}
       id="qa"
-      className="w-full py-20 bg-black relative"
+      className="w-full py-12 md:py-20 bg-black relative"
     >
       {/* Background pattern - top left corner */}
       <div className="absolute top-8 left-8 z-0 opacity-10">

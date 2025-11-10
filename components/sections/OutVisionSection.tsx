@@ -59,7 +59,7 @@ const OutVisionSection = () => {
   return (
     <section
       id="vision"
-      className="w-full py-20 bg-black min-h-screen relative"
+      className="w-full py-12 md:py-20 bg-black md:min-h-screen relative"
     >
       {/* Background pattern - top right corner */}
       <div className="absolute top-8 right-8 z-0 opacity-10">
@@ -73,7 +73,7 @@ const OutVisionSection = () => {
       </div>
 
       {/* Background pattern - bottom left corner */}
-      <div className="absolute bottom-8 left-8 z-0 opacity-10">
+      <div className="absolute bottom-8 left-8 z-0 opacity-20">
         <Image
           src={backgroundImg}
           alt=""
@@ -90,7 +90,7 @@ const OutVisionSection = () => {
           className="w-full flex flex-col items-center justify-center relative overflow-hidden"
         >
           <motion.div
-            className="bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-sm border border-purple-500/20 rounded-3xl w-full max-w-6xl p-8 md:p-12 relative"
+            className="bg-linear-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-sm border border-purple-500/20 rounded-3xl w-full max-w-6xl p-8 md:p-12 relative"
             initial={{ opacity: 0, y: 50 }}
             animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -118,7 +118,7 @@ const OutVisionSection = () => {
                 variants={textVariants}
               >
                 <div className="flex items-center justify-center md:justify-start mb-6">
-                  <div className="w-8 h-[2px] bg-gradient-to-r from-purple-500 to-pink-500 mr-4"></div>
+                  <div className="w-8 h-0.5 bg-linear-to-r from-purple-500 to-pink-500 mr-4"></div>
                   <h3 className="text-purple-400 text-xl font-semibold tracking-wide">
                     OUR MISSION
                   </h3>
