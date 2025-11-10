@@ -1,9 +1,7 @@
 import html2canvas from "html2canvas";
 import { Download, Loader2, Mail } from "lucide-react";
-import Image from "next/image";
 import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useState } from "react";
-import logo from "../assets/logo.png";
 import UserService from "../firebase/services/UserService";
 
 export default function GenerateTicket({
@@ -180,15 +178,18 @@ export default function GenerateTicket({
             {/* Content */}
             <div className="relative z-10">
               <div style={{ textAlign: "center", marginBottom: "32px" }}>
-                {/* Logo */}
+                {/* Logo - using regular img tag for html2canvas compatibility */}
                 <div className="flex relative -top-5 items-center justify-center">
-                  <Image
-                    src={logo}
+                  <img
+                    src="/logo.png"
                     alt="Fusion X Logo"
                     width={180}
                     height={180}
+                    crossOrigin="anonymous"
                     style={{
                       objectFit: "contain",
+                      width: "180px",
+                      height: "180px",
                     }}
                   />
                 </div>
