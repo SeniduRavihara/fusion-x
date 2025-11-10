@@ -31,8 +31,17 @@ const qaList: QA[] = [
   {
     id: 3,
     question: "What will I learn during the 3-day sessions?",
-    answer:
-      "Day 1: Python fundamentals and programming basics. Day 2: Neural networks and machine learning concepts. Day 3: Hands-on project building with two collaborative AI projects.",
+    answer: `Day 1 (11/13) — Python Basics:
+      THEORY: Python fundamentals, NumPy, OpenCV, and Pandas libraries.
+      PROJECTS: Calculating the width of coins; Calculating the height of plants.
+
+      Day 2 (11/20) — Intro to AI:
+      THEORY: AI, ML, DL concepts and supervised learning algorithms.
+      PROJECTS: Iris flower classification model; a simple predictive model with practical exercises.
+
+      Day 3 (11/27) — Hands-On Projects:
+      THEORY: Basics of Tkinter for building graphical interfaces.
+      PROJECTS: Handwritten digit recognition system; Face recognition system.`,
   },
   {
     id: 4,
@@ -46,7 +55,6 @@ const qaList: QA[] = [
     answer:
       "Any AI-related project that interests you! This could include computer vision applications, natural language processing, predictive analytics, chatbots, recommendation systems, or any innovative AI solution.",
   },
-
 ];
 
 export default function QandASection() {
