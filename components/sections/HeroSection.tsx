@@ -166,12 +166,12 @@ const HeroSection = () => {
                 {/* Text container with border */}
                 <div className="relative bg-black border-2 border-purple-600 rounded-full px-10 py-4 pr-20 group-hover:border-purple-500 transition-colors duration-300">
                   <span className="text-white text-lg md:text-xl font-normal tracking-wide whitespace-nowrap">
-                    Register Now
+                    Registration Closed
                   </span>
                 </div>
 
                 {/* Arrow circle - positioned to overlap */}
-                <div className="absolute right-6 top-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center group-hover:bg-purple-500 transition-all duration-300 group-hover:scale-110">
+                <div className="absolute -right-10 top-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center group-hover:bg-purple-500 transition-all duration-300 group-hover:scale-110">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

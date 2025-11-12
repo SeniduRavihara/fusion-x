@@ -40,12 +40,6 @@ const HeaderSection = () => {
         </div>
 
         <nav aria-label="Primary" className="hidden md:flex items-center gap-8">
-          <Link
-            href="/registerpage"
-            className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
-          >
-            Register
-          </Link>
           {/* <button
             onClick={() => scrollToSection("out-vision")}
             className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
@@ -114,13 +108,6 @@ const HeaderSection = () => {
         {isMenuOpen && (
           <div className="md:hidden absolute top-full left-0 w-full bg-black/95 backdrop-blur-md border-b border-neutral-800">
             <nav className="flex flex-col items-center py-6 space-y-4">
-              <Link
-                href="/registerpage"
-                className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Register
-              </Link>
               <button
                 onClick={() => scrollToSection("out-vision")}
                 className="text-sm font-medium text-white hover:text-purple-400 transition-colors"
