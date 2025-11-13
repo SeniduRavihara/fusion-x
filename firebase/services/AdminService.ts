@@ -19,6 +19,9 @@ export type RegistrationRecord = {
   createdAt?: unknown;
   is_arrived?: boolean;
   arrivedAt?: unknown;
+  day1_arrived?: boolean;
+  day2_arrived?: boolean;
+  day3_arrived?: boolean;
 };
 
 class AdminService {
@@ -54,6 +57,15 @@ class AdminService {
     } else {
       await updateDoc(ref, { is_arrived: false, arrivedAt: null });
     }
+  }
+
+  /**
+   * Update arrival for a specific day.
+   */
+  static async setDayArrival(id: string, day: 1 | 2 | 3, arrived: boolean) {
+    const ref = doc(db, "registrations", id);
+    const field = `day${day}_arrived` as keyof RegistrationRecord;
+    await updateDoc(ref, { [field]: arrived });
   }
 }
 

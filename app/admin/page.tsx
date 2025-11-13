@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import QrScan from "react-qr-reader";
 import * as XLSX from "xlsx";
@@ -16,6 +17,8 @@ import AdminService, {
 } from "../../firebase/services/AdminService";
 
 export default function AdminPage() {
+  const { user, loading: authLoading, isAdmin, signOut } = useAuth();
+  const router = useRouter();
   const [items, setItems] = useState<RegistrationRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
@@ -29,7 +32,9 @@ export default function AdminPage() {
     faculty: true,
     year: true,
     registeredAt: false,
-    arrived: true,
+    day1: true,
+    day2: true,
+    day3: true,
     actions: true,
   });
   const [showColumnMenu, setShowColumnMenu] = useState(false);
@@ -40,6 +45,7 @@ export default function AdminPage() {
   const [processingScan, setProcessingScan] = useState(false);
   const [scannerKey, setScannerKey] = useState(0);
   const qrRef = useRef<QrScan | null>(null);
+  const [selectedDay, setSelectedDay] = useState<1 | 2 | 3>(1);
 
   useEffect(() => {
     const unsub = AdminService.listenRegistrations((list) => {
@@ -70,8 +76,8 @@ export default function AdminPage() {
       setUpdating(id);
       setSuccess("");
       setError("");
-      await AdminService.setArrival(id, !current);
-      setSuccess("Arrival status updated successfully!");
+      await AdminService.setDayArrival(id, selectedDay, !current);
+      setSuccess(`Day ${selectedDay} arrival status updated successfully!`);
       setTimeout(() => setSuccess(""), 3000); // Clear success message after 3 seconds
     } catch (err) {
       console.error(err);
@@ -174,8 +180,13 @@ export default function AdminPage() {
         return;
       }
 
-      if (registration.is_arrived) {
-        setError(`${registration.name} has already checked in!`);
+      const dayField = `day${selectedDay}_arrived` as keyof RegistrationRecord;
+      const isDayArrived = registration[dayField] as boolean;
+
+      if (isDayArrived) {
+        setError(
+          `${registration.name} has already checked in for Day ${selectedDay}!`
+        );
         setTimeout(() => setError(""), 5000);
         // Reset scan state to allow next scan
         setTimeout(() => {
@@ -185,9 +196,11 @@ export default function AdminPage() {
         return;
       }
 
-      // Update arrival status
-      await AdminService.setArrival(registration.id, true);
-      setSuccess(`✅ ${registration.name} checked in successfully!`);
+      // Update arrival status for the selected day
+      await AdminService.setDayArrival(registration.id, selectedDay, true);
+      setSuccess(
+        `✅ ${registration.name} checked in for Day ${selectedDay} successfully!`
+      );
       setTimeout(() => setSuccess(""), 3000);
 
       // Reset scan state to allow next scan instead of closing
@@ -220,7 +233,6 @@ export default function AdminPage() {
     return String(ts);
   }
 
-  const { signOut, user } = useAuth();
   const [signingOut, setSigningOut] = useState(false);
 
   const handleLogout = async () => {
@@ -235,8 +247,41 @@ export default function AdminPage() {
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#05060a] flex items-center justify-center">
+        <div className="text-white text-xl">Checking authentication...</div>
+      </div>
+    );
+  }
+
+  if (!user || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-[#05060a] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-neutral-900/30 rounded-lg border border-neutral-800 p-8 text-center">
+          <div className="text-red-400 text-xl font-semibold mb-4">
+            Access Denied
+          </div>
+          <div className="text-white/70 mb-6">
+            You don&apos;t have admin privileges. Please use the admin login
+            page.
+          </div>
+          <button
+            onClick={() => router.push("/admin-login")}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            Go to Admin Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const downloadExcel = () => {
-    const data = items.map((r) => ({
+    const sortedItems = [...items].sort((a, b) =>
+      (a.name || "").localeCompare(b.name || "")
+    );
+    const data = sortedItems.map((r) => ({
       ID: r.id,
       Name: r.name || "",
       Email: r.email || "",
@@ -244,6 +289,9 @@ export default function AdminPage() {
       Faculty: r.faculty || "",
       Year: r.year || "",
       "Registered At": fmt(r.createdAt),
+      "Day 1 Arrived": r.day1_arrived ? "Yes" : "No",
+      "Day 2 Arrived": r.day2_arrived ? "Yes" : "No",
+      "Day 3 Arrived": r.day3_arrived ? "Yes" : "No",
       Arrived: r.is_arrived ? "Yes" : "No",
     }));
 
@@ -293,6 +341,8 @@ export default function AdminPage() {
                           />
                           {key === "registeredAt"
                             ? "Registered At"
+                            : key.startsWith("day") && key.length === 4
+                            ? `Day ${key.slice(3)}`
                             : key.charAt(0).toUpperCase() + key.slice(1)}
                         </label>
                       ))}
@@ -326,6 +376,41 @@ export default function AdminPage() {
           <p className="mt-4 text-green-400 text-center">{success}</p>
         )}
         {error && <p className="mt-4 text-red-400 text-center">{error}</p>}
+
+        {!loading && (
+          <div className="mb-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="bg-neutral-900/30 rounded-lg border border-neutral-800 p-4 text-center">
+              <div className="text-2xl font-bold text-blue-400">
+                {items.length}
+              </div>
+              <div className="text-sm text-white/70">Total Registered</div>
+            </div>
+            <div className="bg-neutral-900/30 rounded-lg border border-neutral-800 p-4 text-center">
+              <div className="text-2xl font-bold text-green-400">
+                {items.filter((item) => item.day1_arrived).length}
+              </div>
+              <div className="text-sm text-white/70">Day 1 Arrived</div>
+            </div>
+            <div className="bg-neutral-900/30 rounded-lg border border-neutral-800 p-4 text-center">
+              <div className="text-2xl font-bold text-green-400">
+                {items.filter((item) => item.day2_arrived).length}
+              </div>
+              <div className="text-sm text-white/70">Day 2 Arrived</div>
+            </div>
+            <div className="bg-neutral-900/30 rounded-lg border border-neutral-800 p-4 text-center">
+              <div className="text-2xl font-bold text-green-400">
+                {items.filter((item) => item.day3_arrived).length}
+              </div>
+              <div className="text-sm text-white/70">Day 3 Arrived</div>
+            </div>
+            <div className="bg-neutral-900/30 rounded-lg border border-neutral-800 p-4 text-center col-span-2 sm:col-span-1">
+              <div className="text-2xl font-bold text-purple-400">
+                {items.filter((item) => item.is_arrived).length}
+              </div>
+              <div className="text-sm text-white/70">Overall Arrived</div>
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div>Loading...</div>
@@ -443,6 +528,28 @@ export default function AdminPage() {
                 className="w-full px-4 py-3 sm:px-4 sm:py-2 rounded-lg bg-neutral-800/60 border border-neutral-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm sm:text-base"
               />
             </div>
+            <div className="mb-4">
+              <div className="flex flex-wrap gap-4 items-center">
+                <span className="text-white font-medium">
+                  Mark arrivals for:
+                </span>
+                {[1, 2, 3].map((day) => (
+                  <label
+                    key={day}
+                    className="flex items-center gap-2 text-white"
+                  >
+                    <input
+                      type="radio"
+                      name="selectedDay"
+                      checked={selectedDay === day}
+                      onChange={() => setSelectedDay(day as 1 | 2 | 3)}
+                      className="rounded"
+                    />
+                    Day {day}
+                  </label>
+                ))}
+              </div>
+            </div>
             <div className="overflow-x-auto rounded-lg border border-neutral-800 bg-neutral-900/30">
               <table className="w-full text-left text-sm sm:text-base">
                 <thead className="bg-neutral-900/50">
@@ -477,9 +584,19 @@ export default function AdminPage() {
                         Registered At
                       </th>
                     )}
-                    {visibleColumns.arrived && (
+                    {visibleColumns.day1 && (
                       <th className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">
-                        Arrived
+                        Day 1
+                      </th>
+                    )}
+                    {visibleColumns.day2 && (
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">
+                        Day 2
+                      </th>
+                    )}
+                    {visibleColumns.day3 && (
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">
+                        Day 3
                       </th>
                     )}
                     {visibleColumns.actions && (
@@ -491,11 +608,15 @@ export default function AdminPage() {
                 </thead>
                 <tbody>
                   {(() => {
-                    const filteredItems = items.filter((item) =>
-                      item.email
-                        ?.toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    );
+                    const filteredItems = items
+                      .filter((item) =>
+                        item.email
+                          ?.toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )
+                      .sort((a, b) =>
+                        (a.name || "").localeCompare(b.name || "")
+                      );
                     const visibleCount =
                       Object.values(visibleColumns).filter(Boolean).length;
                     return (
@@ -546,29 +667,48 @@ export default function AdminPage() {
                                 {fmt(r.createdAt)}
                               </td>
                             )}
-                            {visibleColumns.arrived && (
+                            {visibleColumns.day1 && (
                               <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">
-                                {r.is_arrived ? "Yes" : "No"}
+                                {r.day1_arrived ? "✓" : ""}
+                              </td>
+                            )}
+                            {visibleColumns.day2 && (
+                              <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">
+                                {r.day2_arrived ? "✓" : ""}
+                              </td>
+                            )}
+                            {visibleColumns.day3 && (
+                              <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">
+                                {r.day3_arrived ? "✓" : ""}
                               </td>
                             )}
                             {visibleColumns.actions && (
                               <td className="px-2 sm:px-4 py-2 sm:py-3">
                                 <button
                                   className={`inline-flex items-center gap-1 sm:gap-2 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium ${
-                                    r.is_arrived
+                                    (r[
+                                      `day${selectedDay}_arrived` as keyof RegistrationRecord
+                                    ] as boolean)
                                       ? "bg-green-600"
                                       : "bg-purple-600"
                                   }`}
                                   onClick={() =>
-                                    toggleArrival(r.id, r.is_arrived)
+                                    toggleArrival(
+                                      r.id,
+                                      r[
+                                        `day${selectedDay}_arrived` as keyof RegistrationRecord
+                                      ] as boolean
+                                    )
                                   }
                                   disabled={updating === r.id}
                                 >
                                   {updating === r.id
                                     ? "Updating..."
-                                    : r.is_arrived
-                                    ? "Mark not arrived"
-                                    : "Mark arrived"}
+                                    : (r[
+                                        `day${selectedDay}_arrived` as keyof RegistrationRecord
+                                      ] as boolean)
+                                    ? `Unmark Day ${selectedDay}`
+                                    : `Mark Day ${selectedDay}`}
                                 </button>
                               </td>
                             )}
